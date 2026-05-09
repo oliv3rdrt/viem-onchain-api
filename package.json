@@ -1,0 +1,31 @@
+{
+  "name": "viem-playground",
+  "version": "1.0.0",
+  "description": "Personal exploration of viem — type-safe Ethereum interactions",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "read": "tsx src/readChain.ts",
+    "watch": "tsx src/watchEvents.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.1",
+    "node-cache": "^5.1.2",
+    "viem": "^2.21.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.2",
+    "@types/node-cache": "^4.1.3",
+    "tsx": "^4.16.0",
+    "typescript": "^5.4.5"
+  }
+}
