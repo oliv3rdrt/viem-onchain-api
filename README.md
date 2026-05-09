@@ -1,24 +1,19 @@
-```
-        _                
- __   _(_) ___ _ __ ___  
- \ \ / / |/ _ \ '_ ` _ \ 
-  \ V /| |  __/ | | | | |
-   \_/ |_|\___|_| |_| |_|
-                         
-  Type-safe Ethereum client + REST API
-```
+# viem-playground
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6.svg)](https://www.typescriptlang.org)
 [![viem](https://img.shields.io/badge/viem-2.x-007acc.svg)](https://viem.sh)
 [![Express](https://img.shields.io/badge/Express-5.x-blue.svg)](https://expressjs.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-Two things in one repo:
+Three things in one repo:
 
 1. **Scripts** that exercise viem's read APIs (chain reads, multicall, ENS, event watching).
 2. An **Express REST API** that wraps the same viem client and exposes the
    on-chain world over HTTP, with response envelopes, TTL caching, rate
    limiting, and request validation.
+3. A **single-page web UI** served by the same Express server, with one panel
+   per endpoint. No build step, vanilla HTML/CSS/JS, hits the same `/v1/*`
+   routes you'd hit from `curl`.
 
 ---
 
@@ -27,6 +22,7 @@ Two things in one repo:
 - [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
 - [Quick start](#quick-start)
+- [Web UI](#web-ui)
 - [Project structure](#project-structure)
 - [API Reference](#api-reference)
 - [Response envelope](#response-envelope)
@@ -90,13 +86,40 @@ cp .env.example .env       # paste in MAINNET_RPC_URL and SEPOLIA_RPC_URL
 npm run dev                # tsx watch, server on :3001
 ```
 
-Then in another terminal:
+Open <http://localhost:3001> for the web UI, or hit the API directly:
 
 ```bash
 curl http://localhost:3001/health
 curl http://localhost:3001/v1/balance/0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 curl http://localhost:3001/v1/ens/resolve/vitalik.eth
 ```
+
+## Web UI
+
+The Express server also serves a single-page UI from `web/`. No build step, no
+framework, just `index.html` + `main.js` + `style.css` shipped as-is by
+`express.static`.
+
+```
+http://localhost:3001/         <- web UI
+http://localhost:3001/api      <- JSON manifest of every endpoint
+http://localhost:3001/v1/*     <- the API routes themselves
+```
+
+Every panel is a thin form around one endpoint:
+
+| Panel    | Endpoint                                              |
+|----------|-------------------------------------------------------|
+| balance  | `GET /v1/balance/:address`                            |
+| ens      | `GET /v1/ens/resolve/:name`, `/v1/ens/reverse/:address` |
+| block    | `GET /v1/block/latest`, `/v1/block/:number`           |
+| token    | `GET /v1/token/:address`, `/v1/token/:address/balance/:holder` |
+| events   | `GET /v1/events/transfers/:token`                     |
+| simulate | `POST /v1/simulate`                                   |
+
+The UI shows the response body verbatim and a small meta strip (status,
+chain, latency, cached/fresh). The chain selector top-right propagates to
+every read.
 
 ## Project structure
 
@@ -120,6 +143,10 @@ viem-playground/
 │   ├── watchEvents.ts     # standalone script: live USDC Transfer log
 │   ├── client.ts          # plain viem client used by the scripts
 │   └── ethereum.d.ts      # window.ethereum type for browser usage
+├── web/
+│   ├── index.html         # single-page UI, one panel per endpoint
+│   ├── main.js            # vanilla ES module, fetches /v1/*
+│   └── style.css          # dark theme
 ├── tsconfig.json          # NodeNext, ES2022, strict
 ├── .env.example
 └── README.md

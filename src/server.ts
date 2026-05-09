@@ -1,4 +1,6 @@
 import "dotenv/config";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import express from "express";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
@@ -13,6 +15,8 @@ import { PORT, RATE_LIMIT_RPM, SUPPORTED_CHAINS } from "./config.js";
 
 const app = express();
 const startTime = Date.now();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const WEB_DIR = path.resolve(__dirname, "..", "web");
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors());
@@ -26,6 +30,9 @@ app.use(
     message: { ok: false, error: { code: "RATE_LIMITED", message: "Too many requests - try again in a minute." } },
   })
 );
+
+// ─── Static web UI ────────────────────────────────────────────────────────────
+app.use(express.static(WEB_DIR));
 
 // ─── Routes ──────────────────────────────────────────────────────────────────
 app.use("/v1/balance", balanceRouter);
@@ -47,8 +54,8 @@ app.get("/health", (_req, res) => {
   });
 });
 
-// ─── Root ─────────────────────────────────────────────────────────────────────
-app.get("/", (_req, res) => {
+// ─── API manifest (was at /, moved aside so / serves the web UI) ──────────────
+app.get("/api", (_req, res) => {
   res.json({
     name: "viem-playground API",
     version: "1.0.0",
@@ -86,8 +93,9 @@ app.use((e: Error, _req: express.Request, res: express.Response, _next: express.
 });
 
 app.listen(PORT, () => {
-  console.log(`\n🔗 viem-playground API`);
-  console.log(`   http://localhost:${PORT}`);
+  console.log(`\n🔗 viem-playground`);
+  console.log(`   Web UI: http://localhost:${PORT}`);
+  console.log(`   API:    http://localhost:${PORT}/api`);
   console.log(`   Chains: ${Object.keys(SUPPORTED_CHAINS).join(", ")}`);
   console.log(`   Rate limit: ${RATE_LIMIT_RPM} req/min\n`);
 });
