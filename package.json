@@ -1,7 +1,7 @@
 {
   "name": "viem-playground",
   "version": "1.0.0",
-  "description": "Personal exploration of viem — type-safe Ethereum interactions",
+  "description": "Personal exploration of viem - type-safe Ethereum interactions",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
