@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>viem-playground</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">vp</span>
+        <h1>viem-playground</h1>
+        <span class="tag">on-chain reads over HTTP</span>
+      </div>
+      <div class="chain-pick">
+        <label for="chain">chain</label>
+        <select id="chain">
+          <option value="mainnet">mainnet</option>
+          <option value="sepolia">sepolia</option>
+        </select>
+        <span id="health-dot" class="dot" title="health"></span>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-target="balance">balance</button>
+      <button class="tab" data-target="ens">ens</button>
+      <button class="tab" data-target="block">block</button>
+      <button class="tab" data-target="token">token</button>
+      <button class="tab" data-target="events">events</button>
+      <button class="tab" data-target="simulate">simulate</button>
+    </nav>
+
+    <main>
+      <!-- balance -->
+      <section id="balance" class="panel active">
+        <header>
+          <h2>balance</h2>
+          <code class="endpoint">GET /v1/balance/:address</code>
+        </header>
+        <form data-form="balance">
+          <label>address
+            <input name="address" placeholder="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" required />
+          </label>
+          <button type="submit">fetch</button>
+        </form>
+        <div class="result" id="r-balance"></div>
+      </section>
+
+      <!-- ens -->
+      <section id="ens" class="panel">
+        <header>
+          <h2>ens</h2>
+          <code class="endpoint">GET /v1/ens/resolve/:name &middot; GET /v1/ens/reverse/:address</code>
+        </header>
+        <form data-form="ens">
+          <label>name or address
+            <input name="input" placeholder="vitalik.eth or 0x..." required />
+          </label>
+          <button type="submit">lookup</button>
+        </form>
+        <p class="hint">An ENS name (ending in <code>.eth</code>) resolves forward, an address resolves reverse.</p>
+        <div class="result" id="r-ens"></div>
+      </section>
+
+      <!-- block -->
+      <section id="block" class="panel">
+        <header>
+          <h2>block</h2>
+          <code class="endpoint">GET /v1/block/latest &middot; GET /v1/block/:number</code>
+        </header>
+        <form data-form="block">
+          <label>block (number or "latest")
+            <input name="number" value="latest" required />
+          </label>
+          <button type="submit">fetch</button>
+        </form>
+        <div class="result" id="r-block"></div>
+      </section>
+
+      <!-- token -->
+      <section id="token" class="panel">
+        <header>
+          <h2>token</h2>
+          <code class="endpoint">GET /v1/token/:address &middot; GET /v1/token/:address/balance/:holder</code>
+        </header>
+        <form data-form="token">
+          <label>token address
+            <input name="token" list="well-known" placeholder="0xA0b8...eB48 (USDC)" required />
+            <datalist id="well-known">
+              <option value="0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48">USDC</option>
+              <option value="0xdAC17F958D2ee523a2206206994597C13D831ec7">USDT</option>
+              <option value="0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2">WETH</option>
+              <option value="0x6B175474E89094C44Da98b954EedeAC495271d0F">DAI</option>
+            </datalist>
+          </label>
+          <label>holder (optional, fetches balance)
+            <input name="holder" placeholder="0x..." />
+          </label>
+          <button type="submit">fetch</button>
+        </form>
+        <div class="result" id="r-token"></div>
+      </section>
+
+      <!-- events -->
+      <section id="events" class="panel">
+        <header>
+          <h2>events</h2>
+          <code class="endpoint">GET /v1/events/transfers/:token</code>
+        </header>
+        <form data-form="events">
+          <label>token address
+            <input name="token" placeholder="0xA0b8...eB48 (USDC)" required />
+          </label>
+          <div class="row">
+            <label>blocks back
+              <input name="blocks" type="number" min="1" max="2000" value="500" />
+            </label>
+            <label>limit
+              <input name="limit" type="number" min="1" max="100" value="25" />
+            </label>
+          </div>
+          <div class="row">
+            <label>filter from
+              <input name="from" placeholder="0x... (optional)" />
+            </label>
+            <label>filter to
+              <input name="to" placeholder="0x... (optional)" />
+            </label>
+          </div>
+          <button type="submit">fetch</button>
+        </form>
+        <div class="result" id="r-events"></div>
+      </section>
+
+      <!-- simulate -->
+      <section id="simulate" class="panel">
+        <header>
+          <h2>simulate</h2>
+          <code class="endpoint">POST /v1/simulate</code>
+        </header>
+        <p class="hint">Dry-run a contract call against the latest state. The body shape matches the API.</p>
+        <form data-form="simulate">
+          <label>to (contract)
+            <input name="to" required placeholder="0xA0b8...eB48" />
+          </label>
+          <label>from (caller, optional)
+            <input name="from" placeholder="0x..." />
+          </label>
+          <label>value (wei, optional)
+            <input name="value" placeholder="0" />
+          </label>
+          <label>functionName
+            <input name="functionName" required placeholder="balanceOf" />
+          </label>
+          <label>abi (one human-readable fragment per line)
+            <textarea name="abi" rows="3" required>function balanceOf(address) view returns (uint256)</textarea>
+          </label>
+          <label>args (JSON array)
+            <textarea name="args" rows="2">["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"]</textarea>
+          </label>
+          <button type="submit">simulate</button>
+        </form>
+        <div class="result" id="r-simulate"></div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Express server on <code id="footer-port">:3001</code></span>
+      <span>Cache, rate limit and validation pass-through &mdash; see <a href="/health">/health</a></span>
+    </footer>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
