@@ -15,16 +15,18 @@ TypeScript REST API exposing Ethereum data over HTTP using viem. Routes for bala
 |------|---------|
 | Node.js | 18+ |
 | npm | 9+ |
-| RPC URL | any (Alchemy, Infura, self-hosted) |
+| RPC URL | archive-capable; recommended Infura via [MetaMask Developer](https://developer.metamask.io) |
 
 ## Quick start
 
 ```bash
 npm install
 cp .env.example .env
-# set MAINNET_RPC_URL
+# set MAINNET_RPC_URL to your Infura URL
 npm run dev
 ```
+
+The `/v1/events` and `/v1/block/:tag` routes query historical state, which requires an archive node. Public RPCs typically retain only the most recent ~128 blocks of state, so those endpoints will fail past that horizon without an archive provider.
 
 API serves on http://localhost:3000. Open `/` for the web UI, or hit endpoints directly:
 
