@@ -11,6 +11,7 @@ import { ensRouter } from "./routes/ens.js";
 import { tokenRouter } from "./routes/token.js";
 import { eventsRouter } from "./routes/events.js";
 import { gasRouter } from "./routes/gas.js";
+import { networkRouter } from "./routes/network.js";
 import { simulateRouter } from "./routes/simulate.js";
 import { txRouter } from "./routes/tx.js";
 import { stats } from "./cache.js";
@@ -45,6 +46,7 @@ app.use("/v1/ens", ensRouter);
 app.use("/v1/token", tokenRouter);
 app.use("/v1/events", eventsRouter);
 app.use("/v1/gas", gasRouter);
+app.use("/v1/network", networkRouter);
 app.use("/v1/simulate", simulateRouter);
 app.use("/v1/tx", txRouter);
 
@@ -78,6 +80,7 @@ app.get("/api", (_req, res) => {
       transfers: "GET  /v1/events/transfers/:token?chain=mainnet&blocks=500&limit=25",
       gas: "GET  /v1/gas?chain=mainnet",
       code: "GET  /v1/code/:address?chain=mainnet",
+      network: "GET  /v1/network?chain=mainnet",
       tx: "GET  /v1/tx/:hash?chain=mainnet",
       simulate: "POST /v1/simulate",
     },
