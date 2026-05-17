@@ -10,6 +10,7 @@ export const DEFAULT_CHAIN = "mainnet";
 export const CACHE_TTL = {
   balance: 10,        // 10s - changes per block
   block: 5,           // 5s - new block every ~12s
+  gas: 5,             // 5s - moves with the block
   ensResolve: 300,    // 5min - ENS entries rarely change
   ensReverse: 300,
   tokenInfo: 600,     // 10min - symbol/decimals are immutable
