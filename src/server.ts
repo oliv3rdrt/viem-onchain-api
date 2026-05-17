@@ -6,6 +6,7 @@ import cors from "cors";
 import rateLimit from "express-rate-limit";
 import { balanceRouter } from "./routes/balance.js";
 import { blockRouter } from "./routes/block.js";
+import { codeRouter } from "./routes/code.js";
 import { ensRouter } from "./routes/ens.js";
 import { tokenRouter } from "./routes/token.js";
 import { eventsRouter } from "./routes/events.js";
@@ -39,6 +40,7 @@ app.use(express.static(WEB_DIR));
 // ─── Routes ──────────────────────────────────────────────────────────────────
 app.use("/v1/balance", balanceRouter);
 app.use("/v1/block", blockRouter);
+app.use("/v1/code", codeRouter);
 app.use("/v1/ens", ensRouter);
 app.use("/v1/token", tokenRouter);
 app.use("/v1/events", eventsRouter);
@@ -75,6 +77,7 @@ app.get("/api", (_req, res) => {
       token_balance: "GET  /v1/token/:address/balance/:holder?chain=mainnet",
       transfers: "GET  /v1/events/transfers/:token?chain=mainnet&blocks=500&limit=25",
       gas: "GET  /v1/gas?chain=mainnet",
+      code: "GET  /v1/code/:address?chain=mainnet",
       tx: "GET  /v1/tx/:hash?chain=mainnet",
       simulate: "POST /v1/simulate",
     },
