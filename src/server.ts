@@ -17,6 +17,7 @@ import { storageRouter } from "./routes/storage.js";
 import { txRouter } from "./routes/tx.js";
 import { stats } from "./cache.js";
 import { PORT, RATE_LIMIT_RPM, SUPPORTED_CHAINS } from "./config.js";
+import { requestLogger } from "./logging.js";
 
 const app = express();
 const startTime = Date.now();
@@ -24,6 +25,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_DIR = path.resolve(__dirname, "..", "web");
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
+app.use(requestLogger);
 app.use(cors());
 app.use(express.json());
 app.use(
