@@ -13,6 +13,7 @@ import { eventsRouter } from "./routes/events.js";
 import { gasRouter } from "./routes/gas.js";
 import { networkRouter } from "./routes/network.js";
 import { simulateRouter } from "./routes/simulate.js";
+import { storageRouter } from "./routes/storage.js";
 import { txRouter } from "./routes/tx.js";
 import { stats } from "./cache.js";
 import { PORT, RATE_LIMIT_RPM, SUPPORTED_CHAINS } from "./config.js";
@@ -48,6 +49,7 @@ app.use("/v1/events", eventsRouter);
 app.use("/v1/gas", gasRouter);
 app.use("/v1/network", networkRouter);
 app.use("/v1/simulate", simulateRouter);
+app.use("/v1/storage", storageRouter);
 app.use("/v1/tx", txRouter);
 
 // ─── Health ───────────────────────────────────────────────────────────────────
@@ -81,6 +83,7 @@ app.get("/api", (_req, res) => {
       gas: "GET  /v1/gas?chain=mainnet",
       code: "GET  /v1/code/:address?chain=mainnet",
       network: "GET  /v1/network?chain=mainnet",
+      storage: "GET  /v1/storage/:address/:slot?chain=mainnet",
       tx: "GET  /v1/tx/:hash?chain=mainnet",
       simulate: "POST /v1/simulate",
     },
