@@ -9,6 +9,7 @@ import { blockRouter } from "./routes/block.js";
 import { ensRouter } from "./routes/ens.js";
 import { tokenRouter } from "./routes/token.js";
 import { eventsRouter } from "./routes/events.js";
+import { gasRouter } from "./routes/gas.js";
 import { simulateRouter } from "./routes/simulate.js";
 import { stats } from "./cache.js";
 import { PORT, RATE_LIMIT_RPM, SUPPORTED_CHAINS } from "./config.js";
@@ -40,6 +41,7 @@ app.use("/v1/block", blockRouter);
 app.use("/v1/ens", ensRouter);
 app.use("/v1/token", tokenRouter);
 app.use("/v1/events", eventsRouter);
+app.use("/v1/gas", gasRouter);
 app.use("/v1/simulate", simulateRouter);
 
 // ─── Health ───────────────────────────────────────────────────────────────────
@@ -70,6 +72,7 @@ app.get("/api", (_req, res) => {
       token_info: "GET  /v1/token/:address?chain=mainnet",
       token_balance: "GET  /v1/token/:address/balance/:holder?chain=mainnet",
       transfers: "GET  /v1/events/transfers/:token?chain=mainnet&blocks=500&limit=25",
+      gas: "GET  /v1/gas?chain=mainnet",
       simulate: "POST /v1/simulate",
     },
     example_requests: {
